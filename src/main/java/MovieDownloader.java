@@ -13,7 +13,7 @@ import java.util.Scanner;
  * Code adapted from Google.
  *
  * YOUR TASK: Add comments explaining how this code works!
- * 
+ *
  * @author Joel Ross & Kyungmin Lee
  */
 public class MovieDownloader {
@@ -36,46 +36,46 @@ public class MovieDownloader {
 		try {
 
 			URL url = new URL(urlString);
-
+			// construct HTTP request
 			urlConnection = (HttpURLConnection) url.openConnection();
 			urlConnection.setRequestMethod("GET");
-			urlConnection.connect();
-
+			urlConnection.connect(); // send GET request
+			 // Set up a stream for the output from the GET request
 			InputStream inputStream = urlConnection.getInputStream();
 			StringBuffer buffer = new StringBuffer();
 			if (inputStream == null) {
-				return null;
+				return null; // If there's nothing to read return null
 			}
 			reader = new BufferedReader(new InputStreamReader(inputStream));
 
 			String line = reader.readLine();
-			while (line != null) {
+			while (line != null) { // While there's still information to read add it to the buffer
 				buffer.append(line + "\n");
 				line = reader.readLine();
 			}
 
 			if (buffer.length() == 0) {
-				return null;
+				return null; // if the buffer is empty return null / saving time from work that doesn't need to be done
 			}
-			String results = buffer.toString();
-			results = results.replace("{\"Search\":[","");
+			String results = buffer.toString(); // store all of the information from the GET request in a string
+			results = results.replace("{\"Search\":[",""); // normalize
 			results = results.replace("]}","");
 			results = results.replace("},", "},\n");
 
 			movies = results.split("\n");
-		} 
+		}
 		catch (IOException e) {
-			return null;
-		} 
-		finally {
+			return null; // If there's an input/output error with the HTTP request return null
+		}
+		finally { // if successful
 			if (urlConnection != null) {
-				urlConnection.disconnect();
+				urlConnection.disconnect(); // end connection
 			}
 			if (reader != null) {
 				try {
 					reader.close();
-				} 
-				catch (IOException e) {
+				}
+				catch (IOException e) { // don't just break when there's an error
 				}
 			}
 		}
@@ -84,13 +84,13 @@ public class MovieDownloader {
 	}
 
 
-	public static void main(String[] args) 
+	public static void main(String[] args)
 	{
 		Scanner sc = new Scanner(System.in);
 
 		boolean searching = true;
 
-		while(searching) {					
+		while(searching) {
 			System.out.print("Enter a movie name to search for or type 'q' to quit: ");
 			String searchTerm = sc.nextLine().trim();
 			if(searchTerm.toLowerCase().equals("q")){
